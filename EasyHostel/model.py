@@ -39,7 +39,7 @@ class Attendence(Base):
     hostelId = Column(Integer, nullable=False)
 
 
-engine = create_engine("mysql://uxmjqcj2gqavyh1a:ggmz3mvhw363zx9f \
+engine = create_engine("mysql+pymysql://uxmjqcj2gqavyh1a:ggmz3mvhw363zx9f \
                        @p1us8ottbqwio8hv.cbetxkdyhwsb.us-east-1.rds \
                        .amazonaws.com:3306/rmf5o1p3y0eg5kjn"
                         , echo=True)
