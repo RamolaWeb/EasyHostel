@@ -53,22 +53,28 @@ def createRecord(recordList, breakfastStartTime, breakfastFinishTime
                  , dinnerEndTime):
                     day = -1
                     record = []
-                    response = {}
+                    container = {}
                     for r in recordList:
                         time = r.time
-                        if getDate(time).day > day:
-                            day = getDate(time).day
-                            month = getDate(time).month
-                            year = getDate(time).year
-                            if len(response) > 0:
-                                record.append(response)
+                        dt = getDate(time)
+                        if dt.day > day:
+                            day = dt.day
+                            record.append(response)
                             response = {}
-                            response["date"] = str(year)+"/"+str(month)+"/"+str(day)
+                            container = {}
+                        else:
+                            response = container
+                        response["date"] = str(dt.day)+"/"+str(dt.month)+"/"+str(dt.year)
                         if checkDateTime(time, breakfastStartTime,
                                          breakfastFinishTime):
+                                            print("Yep breakfast")
                                             response["breakfast"] = True
                         if checkDateTime(time, lunchStartTime, lunchEndTime):
                             response["lunch"] = True
+                            print("Yep lunch")
                         if checkDateTime(time, dinnerStartTime, dinnerEndTime):
                             response["dinner"] = True
+                            print("Yep dinner")
+                        container = response
+                    record.append(container)
                     return record

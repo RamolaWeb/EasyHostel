@@ -51,7 +51,6 @@ def studentDetail():
         return render_template("studentData.html")
     else:
         db = getSession()
-        response = {}
         name = request.form["name"]
         email = request.form["email"]
         rollno = int(request.form["rollno"])
@@ -62,38 +61,48 @@ def studentDetail():
                               hostelId=hostelId, studentId=studentId)
             db.add(student)
             db.commit()
-            response["status"] = True
-            response["message"] = "Data Uploaded Successfully"
         except Exception as e:
-            response["status"] = False
-            response["message"] = "Error Occur While Submitting Data"
             traceback.print_exc()
         finally:
             db.close()
-        return jsonify(**response)
+        return render_template("responseStudentData.html")
 
 
 @app.route("/hostel", methods=["GET", "POST"])
 def hostelDetail():
     if request.method == "GET":
-        return render_template("hostelData.html")
+        return render_template("hostelUpdate.html")
     else:
         db = getSession()
-        response = {}
         name = request.form["name"]
+        breakfastStartTime = int(request.form["breakfastStartTime"])
+        breakfastFinishTime = int(request.form["breakfastFinishTime"])
+        lunchStartTime = int(request.form["lunchStartTime"])
+        lunchEndTime = int(request.form["lunchEndTime"])
+        dinnerStartTime = int(request.form["dinnerStartTime"])
+        dinnerEndTime = int(request.form["dinnerEndTime"])
+        breakfastCharges = int(request.form["breakfastCharges"])
+        lunchCharges = int(request.form["lunchCharges"])
+        dinnerCharges = int(request.form["dinnerCharges"])
+        currentBillAdvance = int(request.form["currentBillAdvance"])
         try:
-            hostel = Hostel(name=name)
+            hostel = Hostel(name=name, breakfastStartTime=breakfastStartTime
+                            , breakfastFinishTime=breakfastFinishTime
+                            , lunchStartTime=lunchStartTime
+                            , lunchEndTime=lunchEndTime
+                            , dinnerStartTime=dinnerStartTime
+                            , dinnerEndTime=dinnerEndTime
+                            , breakfastCharges=breakfastCharges
+                            , lunchCharges=lunchCharges
+                            , dinnerCharges=dinnerCharges
+                            )
             db.add(hostel)
             db.commit()
-            response["status"] = True
-            response["message"] = "Data Uploaded Successfully"
         except Exception as e:
-            response["status"] = False
-            response["message"] = "Error Occur While Submitting Data"
             traceback.print_exc()
         finally:
             db.close()
-        return jsonify(**response)
+        return render_template("responseHostelData.html")
 
 
 @app.route("/student/<int:rollno>/<int:fromDate>/<int:toDate>")
