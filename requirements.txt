@@ -1,0 +1,8 @@
+Werkzeug>=0.7
+Jinja2>=2.4
+itsdangerous>=0.21
+click>=2.0
+PyMySQL>=0.7.9
+SQLAlchemy>=1.1.4
+gunicorn>=19.6.0
+Flask>=0.12
