@@ -44,8 +44,5 @@ engine = create_engine("mysql+pymysql://root:Sahil@1234567@localhost:3306 \
                        /EasyHostel", echo=True)"""
 
 
-engine = create_engine("mysql+pymysql://uxmjqcj2gqavyh1a:ggmz3mvhw363zx9f \
-                       @p1us8ottbqwio8hv.cbetxkdyhwsb.us-east-1.rds \
-                       .amazonaws.com:3306/rmf5o1p3y0eg5kjn"
-                       , echo=True)
+engine = create_engine("mysql+pymysql://uxmjqcj2gqavyh1a:ggmz3mvhw363zx9f@p1us8ottbqwio8hv.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/rmf5o1p3y0eg5kjn", echo=True)
 Base.metadata.create_all(engine)
