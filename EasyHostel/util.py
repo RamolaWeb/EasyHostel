@@ -1,5 +1,5 @@
 from sqlalchemy.orm import sessionmaker
-from model import engine
+from EasyHostel.model import engine
 import datetime
 
 
