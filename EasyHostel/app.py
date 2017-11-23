@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, render_template
-from model import Student, Attendence, Hostel
+from EasyHostel.model import Student, Attendence, Hostel
 from util import getSession, checkTime, currentTime, createRecord, checkEmpty
 import traceback
 
