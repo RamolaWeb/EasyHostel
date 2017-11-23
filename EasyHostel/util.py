@@ -48,6 +48,12 @@ def getDate(timestamp):
     return datetime.datetime.fromtimestamp(float(timestamp))
 
 
+def checkEmpty(word):
+    if not word:
+        return -1
+    return word
+
+
 def createRecord(recordList, breakfastStartTime, breakfastFinishTime
                  , lunchStartTime, lunchEndTime, dinnerStartTime
                  , dinnerEndTime):
@@ -57,9 +63,12 @@ def createRecord(recordList, breakfastStartTime, breakfastFinishTime
                     for r in recordList:
                         time = r.time
                         dt = getDate(time)
+                        if day == -1:
+                            response = {}
                         if dt.day > day:
                             day = dt.day
-                            record.append(response)
+                            if response:
+                                record.append(response)
                             response = {}
                             container = {}
                         else:

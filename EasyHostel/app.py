@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, render_template
 from model import Student, Attendence, Hostel
-from util import getSession, checkTime, currentTime, createRecord
+from util import getSession, checkTime, currentTime, createRecord, checkEmpty
 import traceback
 
 
@@ -71,7 +71,7 @@ def studentDetail():
 @app.route("/hostel", methods=["GET", "POST"])
 def hostelDetail():
     if request.method == "GET":
-        return render_template("hostelUpdate.html")
+        return render_template("hostelDetail.html")
     else:
         db = getSession()
         name = request.form["name"]
@@ -146,3 +146,57 @@ def studentRecord(rollno, fromDate, toDate):
 @app.route("/updateInput")
 def updateCheck():
     return render_template("updateCheck.html")
+
+
+@app.route("/hostel/update")
+def hostelUpdate():
+    return render_template("hostelUpdate.html")
+
+
+@app.route("/update/hostel", methods=["POST"])
+def updateHostel():
+    db = getSession()
+    response = {}
+    hostelId = int(request.form["id"])
+    breakfastStartTime = int(checkEmpty(request.form["breakfastStartTime"]))
+    breakfastFinishTime = int(checkEmpty(request.form["breakfastFinishTime"]))
+    lunchStartTime = int(checkEmpty(request.form["lunchStartTime"]))
+    lunchEndTime = int(checkEmpty(request.form["lunchEndTime"]))
+    dinnerStartTime = int(checkEmpty(request.form["dinnerStartTime"]))
+    dinnerEndTime = int(checkEmpty(request.form["dinnerEndTime"]))
+    breakfastCharges = int(checkEmpty(request.form["breakfastCharges"]))
+    lunchCharges = int(checkEmpty(request.form["lunchCharges"]))
+    dinnerCharges = int(checkEmpty(request.form["dinnerCharges"]))
+    currentBillAdvance = int(checkEmpty(request.form["currentBillAdvance"]))
+    try:
+        hostel = db.query(Hostel).filter(Hostel.id == hostelId).first()
+        if breakfastStartTime != -1:
+            hostel.breakfastStartTime = breakfastStartTime
+        if breakfastFinishTime != -1:
+            hostel.breakfastFinishTime = breakfastFinishTime
+        if lunchStartTime != -1:
+            hostel.lunchStartTime = lunchStartTime
+        if lunchEndTime != -1:
+            hostel.lunchEndTime = lunchEndTime
+        if dinnerEndTime != -1:
+            hostel.dinnerEndTime = dinnerEndTime
+        if dinnerStartTime != -1:
+            hostel.dinnerStartTime = dinnerStartTime
+        if breakfastCharges != -1:
+            hostel.breakfastCharges = breakfastCharges
+        if lunchCharges != -1:
+            hostel.lunchCharges = lunchCharges
+        if dinnerCharges != -1:
+            hostel.dinnerCharges = dinnerCharges
+        if currentBillAdvance != -1:
+            hostel.currentBillAdvance = currentBillAdvance
+        db.commit()
+        response["status"] = True
+        response["message"] = "Successfully Updated Hostel Data"
+    except Exception as e:
+        response["status"] = False
+        response["message"] = "Error While Updating"
+        traceback.print_exc()
+    finally:
+        db.close()
+    return jsonify(**response)
