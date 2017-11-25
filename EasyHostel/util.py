@@ -67,23 +67,23 @@ def createRecord(recordList, breakfastStartTime, breakfastFinishTime
                             response = {}
                         if dt.day > day:
                             day = dt.day
-                            if response:
+                            if len(response) != 0:
                                 record.append(response)
                             response = {}
                             container = {}
                         else:
                             response = container
-                        response["date"] = str(dt.day)+"/"+str(dt.month)+"/"+str(dt.year)
                         if checkDateTime(time, breakfastStartTime,
                                          breakfastFinishTime):
-                                            print("Yep breakfast")
+                                            response["date"] = str(dt.day)+"/"+str(dt.month)+"/"+str(dt.year)
                                             response["breakfast"] = True
                         if checkDateTime(time, lunchStartTime, lunchEndTime):
                             response["lunch"] = True
-                            print("Yep lunch")
+                            response["date"] = str(dt.day)+"/"+str(dt.month)+"/"+str(dt.year)
                         if checkDateTime(time, dinnerStartTime, dinnerEndTime):
                             response["dinner"] = True
-                            print("Yep dinner")
+                            response["date"] = str(dt.day)+"/"+str(dt.month)+"/"+str(dt.year)
                         container = response
-                    record.append(container)
+                    if len(container) != 0:
+                        record.append(container)
                     return record

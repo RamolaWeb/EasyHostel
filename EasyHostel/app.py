@@ -12,10 +12,10 @@ def hello():
     return "Hello"
 
 
-@app.route("/update", methods=["POST"])
+@app.route("/update")
 def update():
-    hostelId = request.form["hostelId"]
-    studentId = request.form["studentId"]
+    hostelId = int(request.args.get("hostelId", ""))
+    studentId = int(request.args.get("studentId", ""))
     db = getSession()
     response = {}
     try:
@@ -141,11 +141,6 @@ def studentRecord(rollno, fromDate, toDate):
     finally:
         db.close()
     return jsonify(**response)
-
-
-@app.route("/updateInput")
-def updateCheck():
-    return render_template("updateCheck.html")
 
 
 @app.route("/hostel/update")
