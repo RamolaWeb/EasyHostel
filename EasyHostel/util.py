@@ -19,6 +19,7 @@ def checkTime(startHour, endHour):
     startTime = int(startDate.timestamp())
     endTime = int(endDate.timestamp())
     if nowTime >= startTime and nowTime <= endTime:
+        print("True for "+str(nowTime)+" "+str(startTime)+" "+str(endTime))
         return True
     else:
         return False
@@ -87,3 +88,50 @@ def createRecord(recordList, breakfastStartTime, breakfastFinishTime
                     if len(container) != 0:
                         record.append(container)
                     return record
+
+
+def convertStringToDate(date):
+    dt = datetime.datetime.strptime(date, "%d-%m-%Y")
+    return int(dt.timestamp())
+
+
+def sortAttendenceData(attendenceList, breakfastStartTime
+                       , breakfastFinishTime
+                       , lunchStartTime, lunchEndTime, dinnerStartTime
+                       , dinnerEndTime):
+    response = []
+    recordList = []
+    checkList = [False for x in attendenceList]
+    print(len(checkList))
+    for count, attendence in enumerate(attendenceList):
+        print("Now in"+str(count))
+        for c, a in enumerate(attendenceList):
+            if a.studentId == attendence.studentId and not checkList[c]:
+                recordList.append(attendence)
+                checkList[c] = True
+                print("YEP1")
+        print("YEP")
+        print(len(recordList))
+        result = createRecord(recordList, breakfastStartTime
+                              , breakfastFinishTime
+                              , lunchStartTime, lunchEndTime, dinnerStartTime
+                              , dinnerEndTime)
+        print(len(result))
+        record = result[0]
+        r = {}
+        r["rollNo"] = attendence.studentId
+        if "breakfast" in record:
+            r["breakfast"] = record["breakfast"]
+        else:
+            r["breakfast"] = False
+        if "lunch" in record:
+            r["lunch"] = record["lunch"]
+        else:
+            r["lunch"] = False
+        if "dinner" in record:
+            r["dinner"] = record["dinner"]
+        else:
+            r["dinner"] = False
+        response.append(r)
+        recordList = []
+    return response

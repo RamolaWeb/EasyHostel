@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify, render_template
 from EasyHostel.model import Student, Attendence, Hostel
-from EasyHostel.util import getSession, checkTime, currentTime, createRecord, checkEmpty
+from EasyHostel.util import getSession, checkTime, currentTime, createRecord, \
+                            checkEmpty, checkDateTime, sortAttendenceData, \
+                            convertStringToDate
 import traceback
 
 
@@ -30,12 +32,16 @@ def update():
         elif checkTime(hostel.dinnerStartTime, hostel.dinnerEndTime):
             charges = hostel.dinnerCharges
         student.currentBillAdvance -= charges
-        attendence = Attendence(hostelId=hostelId, studentId=studentId
-                                , time=currentTime())
-        db.add(attendence)
-        db.commit()
-        response["status"] = True
-        response["message"] = "Attendence Recorded Sucessfully"
+        if charges != 0:
+            attendence = Attendence(hostelId=hostelId, studentId=studentId
+                                    , time=currentTime())
+            db.add(attendence)
+            db.commit()
+            response["status"] = True
+            response["message"] = "Attendence Recorded Sucessfully"
+        else:
+            response["status"] = False
+            response["message"] = "Not Having Time for Meal"
     except Exception as e:
             response["status"] = False
             response["message"] = "Student Does Not Exist"
@@ -191,6 +197,41 @@ def updateHostel():
     except Exception as e:
         response["status"] = False
         response["message"] = "Error While Updating"
+        traceback.print_exc()
+    finally:
+        db.close()
+    return jsonify(**response)
+
+
+@app.route("/hostel/<int:id>/<string:date>")
+def hostelStudentData(id, date):
+    db = getSession()
+    response = {}
+    try:
+        dt = convertStringToDate(date)
+        print(dt)
+        attendence = db.query(Attendence).filter(Attendence.hostelId == id
+                                                 , Attendence.time >= dt
+                                                 , Attendence.time <= dt+86400)\
+                                         .all()
+        response["date"] = date
+        hostel = db.query(Hostel).filter(Hostel.id == id).first()
+        hostelBreakfastStartTime = hostel.breakfastStartTime
+        hostelBreakfastEndTime = hostel.breakfastFinishTime
+        hostelLunchStartTime = hostel.lunchStartTime
+        hostelLunchEndTime = hostel.lunchEndTime
+        hostelDinnerStartTime = hostel.dinnerStartTime
+        hostelDinnerEndTime = hostel.dinnerEndTime
+        attendenceList = sortAttendenceData(attendence, hostelBreakfastStartTime
+                                            , hostelBreakfastEndTime
+                                            , hostelLunchStartTime
+                                            , hostelLunchEndTime
+                                            , hostelDinnerStartTime
+                                            , hostelDinnerEndTime)
+        response["attendence"] = attendenceList
+    except Exception as e:
+        response["status"] = False
+        response["message"] = "Error While Getting The Data"
         traceback.print_exc()
     finally:
         db.close()
