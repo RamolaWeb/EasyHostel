@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Hostel Record</title>
+</head>
+<body>
+  <h1 style="text-align: center;"><span style="text-decoration: underline;"><strong>Student </strong>Attendence Record</span>&nbsp;</h1>
+  <table style="height: 316px; width: 690.65px;" border="1" align="center">
+  <tbody>
+  <tr style="height: 72px;">
+  <th style="width: 198px; height: 72px;"><span style="color: #ff9900;">Roll Number</span></th>
+  <th style="width: 154px; height: 72px;"><span style="color: #ff9900;">BreakFast</span></th>
+  <th style="width: 96px; height: 72px;"><span style="color: #ff9900;">Lunch</span></th>
+  <th style="width: 212.65px; height: 72px;"><span style="color: #ff9900;">Dinner</span></th>
+  </tr>
+  {% for attendence in attendenceList %}
+  <tr style="height: 72px;">
+  <td style="width: 198px; height: 72px; text-align: center;">{{attendence["rollNo"]}}</td>
+  <td style="width: 154px; height: 72px; text-align: center;">{{attendence["breakfast"]}}</td>
+  <td style="width: 96px; height: 72px; text-align: center;">{{attendence["lunch"]}}</td>
+  <td style="width: 212.65px; height: 72px; text-align: center;">{{attendence["dinner"]}}</td>
+  </tr>
+  {% endfor %}
+  </tbody>
+  </table>
+</body>
+</html>

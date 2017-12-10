@@ -271,3 +271,40 @@ def createCSVFile(id, date):
     finally:
         db.close()
     return jsonify(**response)
+
+
+@app.route("/record/hostel", methods=["POST"])
+def showHostelRecord():
+    id = int(request.form["hostelId"])
+    date = request.form["date"]
+    db = getSession()
+    try:
+        dt = convertStringToDate(date)
+        attendence = db.query(Attendence).filter(Attendence.hostelId == id
+                                                 , Attendence.time >= dt
+                                                 , Attendence.time <= dt+86400)\
+                                         .all()
+        hostel = db.query(Hostel).filter(Hostel.id == id).first()
+        hostelBreakfastStartTime = hostel.breakfastStartTime
+        hostelBreakfastEndTime = hostel.breakfastFinishTime
+        hostelLunchStartTime = hostel.lunchStartTime
+        hostelLunchEndTime = hostel.lunchEndTime
+        hostelDinnerStartTime = hostel.dinnerStartTime
+        hostelDinnerEndTime = hostel.dinnerEndTime
+        attendenceList = sortAttendenceData(attendence, hostelBreakfastStartTime
+                                            , hostelBreakfastEndTime
+                                            , hostelLunchStartTime
+                                            , hostelLunchEndTime
+                                            , hostelDinnerStartTime
+                                            , hostelDinnerEndTime)
+        db.close()
+        return render_template("hostelRecord.html", attendenceList=attendenceList)
+    except Exception as e:
+        db.close()
+        traceback.print_exc()
+        return render_template("Some Error Occur")
+
+
+@app.route("/hostel/record")
+def showFormHostelRecord():
+    return render_template("hostelRecordView.html")

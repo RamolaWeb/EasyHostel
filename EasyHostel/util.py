@@ -92,7 +92,7 @@ def createRecord(recordList, breakfastStartTime, breakfastFinishTime
 
 
 def convertStringToDate(date):
-    dt = datetime.datetime.strptime(date, "%d-%m-%Y")
+    dt = datetime.datetime.strptime(date, "%Y-%m-%d")
     return int(dt.timestamp())
 
 
