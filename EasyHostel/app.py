@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, render_template
 from EasyHostel.model import Student, Attendence, Hostel
 from EasyHostel.util import getSession, checkTime, currentTime, createRecord, \
                             checkEmpty, checkDateTime, sortAttendenceData, \
-                            convertStringToDate
+                            convertStringToDate, generateCSV
 import traceback
 
 
@@ -229,6 +229,41 @@ def hostelStudentData(id, date):
                                             , hostelDinnerStartTime
                                             , hostelDinnerEndTime)
         response["attendence"] = attendenceList
+    except Exception as e:
+        response["status"] = False
+        response["message"] = "Error While Getting The Data"
+        traceback.print_exc()
+    finally:
+        db.close()
+    return jsonify(**response)
+
+
+@app.route("/hostel/<int:id>/<string:date>/csv")
+def createCSVFile(id, date):
+    db = getSession()
+    response = {}
+    try:
+        dt = convertStringToDate(date)
+        attendence = db.query(Attendence).filter(Attendence.hostelId == id
+                                                 , Attendence.time >= dt
+                                                 , Attendence.time <= dt+86400)\
+                                         .all()
+        hostel = db.query(Hostel).filter(Hostel.id == id).first()
+        hostelBreakfastStartTime = hostel.breakfastStartTime
+        hostelBreakfastEndTime = hostel.breakfastFinishTime
+        hostelLunchStartTime = hostel.lunchStartTime
+        hostelLunchEndTime = hostel.lunchEndTime
+        hostelDinnerStartTime = hostel.dinnerStartTime
+        hostelDinnerEndTime = hostel.dinnerEndTime
+        attendenceList = sortAttendenceData(attendence, hostelBreakfastStartTime
+                                            , hostelBreakfastEndTime
+                                            , hostelLunchStartTime
+                                            , hostelLunchEndTime
+                                            , hostelDinnerStartTime
+                                            , hostelDinnerEndTime)
+        generateCSV(attendenceList, hostel.name, date)
+        response["status"] = True
+        response["message"] = "CSV File Generated"
     except Exception as e:
         response["status"] = False
         response["message"] = "Error While Getting The Data"

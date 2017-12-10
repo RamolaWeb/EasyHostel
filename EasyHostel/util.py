@@ -1,6 +1,7 @@
 from sqlalchemy.orm import sessionmaker
 from EasyHostel.model import engine
 import datetime
+import csv
 
 
 def getSession():
@@ -135,3 +136,12 @@ def sortAttendenceData(attendenceList, breakfastStartTime
         response.append(r)
         recordList = []
     return response
+
+
+def generateCSV(attendenceList, hostelName, date):
+    with open(hostelName+"-"+date+".csv", "w") as csvfile:
+        field = ["rollNo", "breakfast", "lunch", "dinner"]
+        writer = csv.DictWriter(csvfile, fieldnames=field)
+        writer.writeheader()
+        for attendence in attendenceList:
+            writer.writerow(attendence)
