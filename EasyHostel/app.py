@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello():
-    return "Hello"
+    return render_template("LandingPage/index.html")
 
 
 @app.route("/update")
